@@ -133,7 +133,7 @@ const iss_material = new THREE.ShaderMaterial({
 var iss_model;
 const loader = new GLTFLoader();
 loader.load(
-	"Models/ISS_2016_3.glb",
+	"https://storage.googleapis.com/issinspooce/ISS_2016_3.glb",
 	function (gltf) {
 		iss_model = gltf.scene;
 		scene.add(iss_model);

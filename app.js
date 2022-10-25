@@ -26,7 +26,7 @@ async function getLocation() {
 
         let config = {
             method: 'get',
-            url: (`http://api.positionstack.com/v1/reverse?access_key=3c0f357a575272c65473326b89991bc6&query=${latitude},${longitude}`),
+            url: (`http://api.positionstack.com/v1/reverse?access_key=<your api key>&query=${latitude},${longitude}`),
             headers: {}
         };
 
@@ -96,6 +96,12 @@ popUpModal.addEventListener('show.bs.modal', function(event) {
         modalTitle.textContent = "Pass Alerts";
         modalBody.innerHTML = "Loading..."
         
+        function getDirection(angle) {
+            var directions = ['S', 'SSE', 'SE', 'ESE', 'E', 'ENE', 'NE', 'NNE', 'N', 'NNW', 'NW', 'WNW', 'W', 'WSW', 'SW', 'SSW'];
+            var index = Math.round(((angle %= 360) < 0 ? angle + 360 : angle) / 22.5) % 16;
+            return directions[index];
+        }
+        
         function geUserLocation() {
             if (navigator.geolocation) {
                 navigator.geolocation.watchPosition(showPosition);
@@ -129,15 +135,15 @@ popUpModal.addEventListener('show.bs.modal', function(event) {
                         <p>Sighting Details</p>
                         <span><a>Start: </a><a>${e.begin}</a></span>
                         <span><a>Start Altitude: </a><a>${e.beginAlt}</a></span>
-                        <span><a>Start Direction: </a><a>${e.beginDir}</a></span>
+                        <span><a>Start Direction: </a><a>${getDirection(e.beginDir)}</a></span>
 
                         <span><a>Max: </a><a>${e.max}</a></span>
                         <span><a>Max Altitude: </a><a>${e.maxAlt}</a></span>
-                        <span><a>Max Direction: </a><a>${e.maxDir}</a></span>
+                        <span><a>Max Direction: </a><a>${getDirection(e.maxDir)}</a></span>
 
                         <span><a>End: </a><a>${e.end}</a></span>
                         <span><a>End Altitude: </a><a>${e.endAlt}</a></span>
-                        <span><a>End Direction: </a><a>${e.endDir}</a></span>
+                        <span><a>End Direction: </a><a>${getDirection(e.endDir)}</a></span>
 
                     </div>
                 </div>

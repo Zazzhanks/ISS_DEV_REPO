@@ -1,7 +1,7 @@
 import axios from 'axios';
 import cors from 'cors';
 
-main();
+getLocation();
 
 async function getLocation() {
 
@@ -73,39 +73,67 @@ async function getLocation() {
         document.querySelector('#myLocalTime').innerHTML = new Date().toLocaleTimeString('en-US');
 
     }
-}
-async function getConjunction() {
-    const res = await axios({
-        method: 'get',
-        url: 'https://conjunction.azurewebsites.net/',
-        headers: {},
-    });
-    const resData = await JSON.parse(JSON.stringify(res.data))
-    console.log(resData)
-    const modal = document.querySelector('.conjunctions-wrapper');
 
-    for (let item = 0; item < resData.length; item++) {
-        modal.innerHTML += `<div class="conjunction">
-        <div>
-            <p>Object Details</p>
-            <span><a>Object: </a><a id="conjunction_object">${resData[item].object.name}</a></span>
-            <span><a>NORAD ID: </a><a id="conjunction_objectId">${resData[item].object.noradId}</a></span>
-            <span><a>Days Since Epoch: </a><a id="conjunction_object_dse">${resData[item].object.daysSinceEpoch}</a></span>
-        </div>
-        <div>
-            <p>Conjunction Details</p>
-            <span><a>Start: </a><a id="conjunction_start">${resData[item].conjunction.start}</a></span>
-            <span><a>Probability: </a><a id="conjunction_probability">${resData[item].conjunction.probability}</a></span>
-            <span><a>Dilution Threshold: </a><a id="dlt">${resData[item].conjunction.dilutionThreshold} km</a></span>
-            <span><a>Minimum Range: </a><a id="conjunction_minRange">${resData[item].conjunction.minRange} km</a></span>
-            <span><a>Velocity: </a><a id="conjunction_velocity">${resData[item].conjunction.velocity} km/sec</a></span>
-            <span><a>TCA: </a><a id="conjunction_tca">${resData[item].conjunction.tca}</a></span>
-            <span><a>Stop: </a><a id="conjunction_stop">${resData[item].conjunction.stop}</a></span>
-        </div>
-    </div>`;
+}
+
+var popUpModal = document.getElementById('popUpModal')
+popUpModal.addEventListener('show.bs.modal', function(event) {
+    // Button that triggered the modal
+    var button = event.relatedTarget;
+    var modalTitle = popUpModal.querySelector('.modal-title')
+        // Update the modal's content.
+    var modalBody = popUpModal.querySelector('.modal-body')
+
+    if (button.id == "liveVideoToggle") {
+        button = event.relatedTarget;
+        modalTitle.textContent = "Live ISS Video";
+        modalBody.innerHTML = "";
+        modalBody.innerHTML = `<iframe width="470" height="315" src="https://www.youtube-nocookie.com/embed/Y1qQZbTF8iQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+    } else if (button.id == "imageToggle") {
+        modalTitle.textContent = "ISS Modules";
+        modalBody.innerHTML = "image toggled";
+    } else if (button.id == "passesToggle") {
+        modalTitle.textContent = "Pass Alerts";
+        modalBody.innerHTML = "Loading..."
+    } else {
+        modalTitle.textContent = "Conjunction Alert";
+        modalBody.innerHTML = "Loading..."
+
+        async function getConjunction() {
+            const res = await axios({
+                method: 'get',
+                url: 'https://conjunction.azurewebsites.net/',
+                headers: {},
+            });
+            const resData = await JSON.parse(JSON.stringify(res.data));
+            console.log(resData)
+            const modal = document.querySelector('.modal-body');
+            modal.innerHTML = ""
+
+            for (let item = 0; item < resData.length; item++) {
+                modal.innerHTML += `<div class="conjunctions-wrapper">
+                <div class="conjunction">
+                <div>
+                    <p>Object Details</p>
+                    <span><a>Object: </a><a id="conjunction_object">${resData[item].object.name}</a></span>
+                    <span><a>NORAD ID: </a><a id="conjunction_objectId">${resData[item].object.noradId}</a></span>
+                    <span><a>Days Since Epoch: </a><a id="conjunction_object_dse">${resData[item].object.daysSinceEpoch}</a></span>
+                </div>
+                <div>
+                    <p>Conjunction Details</p>
+                    <span><a>Start: </a><a id="conjunction_start">${resData[item].conjunction.start}</a></span>
+                    <span><a>Probability: </a><a id="conjunction_probability">${resData[item].conjunction.probability}</a></span>
+                    <span><a>Dilution Threshold: </a><a id="dlt">${resData[item].conjunction.dilutionThreshold} km</a></span>
+                    <span><a>Minimum Range: </a><a id="conjunction_minRange">${resData[item].conjunction.minRange} km</a></span>
+                    <span><a>Velocity: </a><a id="conjunction_velocity">${resData[item].conjunction.velocity} km/sec</a></span>
+                    <span><a>TCA: </a><a id="conjunction_tca">${resData[item].conjunction.tca}</a></span>
+                    <span><a>Stop: </a><a id="conjunction_stop">${resData[item].conjunction.stop}</a></span>
+                </div>
+            </div>
+        </div>`;
+            }
+        }
+
+        getConjunction();
     }
-}
-async function main() {
-    await getLocation();
-    getConjunction();
-}
+})

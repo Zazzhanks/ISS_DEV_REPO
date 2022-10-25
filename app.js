@@ -95,6 +95,57 @@ popUpModal.addEventListener('show.bs.modal', function(event) {
     } else if (button.id == "passesToggle") {
         modalTitle.textContent = "Pass Alerts";
         modalBody.innerHTML = "Loading..."
+        
+        function geUserLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.watchPosition(showPosition);
+            } else {
+                x.innerHTML = "Geolocation is not supported by this browser.";
+            }
+        }
+
+        async function showPosition(position) {
+            const getPassesRes = await axios({
+                method: 'get',
+                url: `https://api.scraperapi.com?api_key=<your sraperapi api key>&url=https://www.astroviewer.net/iss/ws/predictor.php?sat=25544&lon=${position.coords.longitude}&lat=${position.coords.latitude}&time=1666008000`,
+                headers: {}
+            })
+
+            const getPasses = await JSON.parse(JSON.stringify(getPassesRes.data))["passes"];
+            console.log(getPasses)
+
+            modalBody.innerHTML = ""
+
+            getPasses.forEach(e => {
+                modalBody.innerHTML += `<div class="conjunctions-wrapper">
+                    <div class="conjunction">
+                    <div>
+                        <p>Pass Time</p>
+                        <span><a>Date: </a><a>${e.begin}</a></span>
+                        <span><a>Magnitude: </a><a>${e.mag}</a></span>
+                        <span><a>Visible Radius: </a><a >${e.visibRad}</a></span>
+                    </div>
+                    <div>
+                        <p>Sighting Details</p>
+                        <span><a>Start: </a><a>${e.begin}</a></span>
+                        <span><a>Start Altitude: </a><a>${e.beginAlt}</a></span>
+                        <span><a>Start Direction: </a><a>${e.beginDir}</a></span>
+
+                        <span><a>Max: </a><a>${e.max}</a></span>
+                        <span><a>Max Altitude: </a><a>${e.maxAlt}</a></span>
+                        <span><a>Max Direction: </a><a>${e.maxDir}</a></span>
+
+                        <span><a>End: </a><a>${e.end}</a></span>
+                        <span><a>End Altitude: </a><a>${e.endAlt}</a></span>
+                        <span><a>End Direction: </a><a>${e.endDir}</a></span>
+
+                    </div>
+                </div>
+            </div>`
+            });
+            return getPasses
+        }
+        geUserLocation();
     } else {
         modalTitle.textContent = "Conjunction Alert";
         modalBody.innerHTML = "Loading..."

@@ -111,6 +111,19 @@ popUpModal.addEventListener('show.bs.modal', function(event) {
         }
 
         async function showPosition(position) {
+            
+            function genDate(date) {
+                var year = date.substring(0, 4);
+                var month = date.substring(4, 6);
+                var day = date.substring(6, 8);
+                var hour = date.substring(8, 10);
+                var min = date.substring(10, 12);
+                var sec = date.substring(12, 14);
+
+                var newDate = new Date(year, month - 1, day).toDateString();
+                return `${newDate} ${hour}: ${min}: ${sec}`
+            }
+            
             const getPassesRes = await axios({
                 method: 'get',
                 url: `https://api.scraperapi.com?api_key=<your sraperapi api key>&url=https://www.astroviewer.net/iss/ws/predictor.php?sat=25544&lon=${position.coords.longitude}&lat=${position.coords.latitude}&time=1666008000`,
@@ -127,23 +140,28 @@ popUpModal.addEventListener('show.bs.modal', function(event) {
                     <div class="conjunction">
                     <div>
                         <p>Pass Time</p>
-                        <span><a>Date: </a><a>${e.begin}</a></span>
+                        <span><a>Date: </a><a>${genDate(e.begin)}</a></span>
                         <span><a>Magnitude: </a><a>${e.mag}</a></span>
                         <span><a>Visible Radius: </a><a >${e.visibRad}</a></span>
                     </div>
                     <div>
                         <p>Sighting Details</p>
-                        <span><a>Start: </a><a>${e.begin}</a></span>
+                        <span><a>Start: </a><a>${genDate(e.begin)}</a></span>
                         <span><a>Start Altitude: </a><a>${e.beginAlt}</a></span>
-                        <span><a>Start Direction: </a><a>${getDirection(e.beginDir)}</a></span>
 
-                        <span><a>Max: </a><a>${e.max}</a></span>
+                        <span><a>Start Direction: </a><a>${(e.beginDir)}</a></span>
+
+                        <span><a>Max: </a><a>${genDate(e.max)}</a></span>
                         <span><a>Max Altitude: </a><a>${e.maxAlt}</a></span>
-                        <span><a>Max Direction: </a><a>${getDirection(e.maxDir)}</a></span>
 
-                        <span><a>End: </a><a>${e.end}</a></span>
+                        <span><a>Max Direction: </a><a>${(e.maxDir)}</a></span>
+
+
+                        <span><a>End: </a><a>${genDate(e.end)}</a></span>
                         <span><a>End Altitude: </a><a>${e.endAlt}</a></span>
-                        <span><a>End Direction: </a><a>${getDirection(e.endDir)}</a></span>
+
+                        <span><a>End Direction: </a><a>${(e.endDir)}</a></span>
+
 
                     </div>
                 </div>

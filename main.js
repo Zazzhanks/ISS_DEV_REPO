@@ -20,9 +20,9 @@ const renderer = new THREE.WebGLRenderer();
 
 //camera-------------------------------------------------------------------------------------->
 const camera = new THREE.PerspectiveCamera(
-	90,
+	60,
 	window.innerWidth / window.innerHeight,
-	0.1,
+	0.01,
 	1000
 );
 const controls = new OrbitControls(camera, renderer.domElement);
@@ -133,7 +133,7 @@ const iss_material = new THREE.ShaderMaterial({
 var iss_model;
 const loader = new GLTFLoader();
 loader.load(
-	"https://storage.googleapis.com/issinspooce/ISS_2016_3.glb",
+	"Models/ISS_2016_3.glb",
 	function (gltf) {
 		iss_model = gltf.scene;
 		scene.add(iss_model);
@@ -154,13 +154,12 @@ loader.load(
 		gltf.scene.children[0].material = iss_material;
 		issParent.add(iss_model);
 		EarthMesh.add(issParent);
-		iss_model.scale.set(1 / 5, 1 / 5, 1 / 5);
+		iss_model.scale.set(1 / 40000, 1 / 40000, 1 / 40000);
 		// iss_model.scale.set(1/40000, 1/40000, 1/40000);
 		window.addEventListener("dblclick", function () {
 			// console.log(iss_cameras);
 			var aabb = new THREE.Box3().setFromObject(gltf.scene);
 			var center = aabb.getCenter(new THREE.Vector3());
-			var size = aabb.getSize(new THREE.Vector3());
 
 			if (is_iss_selected === false) {
 				gsap.to(camera.position, {
@@ -298,6 +297,9 @@ function render_line() {
 camera.aspect = window.innerWidth / window.innerHeight;
 camera.updateProjectionMatrix();
 renderer.setSize(window.innerWidth, window.innerHeight);
+
+
+
 var satrec,
 	gmst,
 	positionAndVelocity,
@@ -337,20 +339,19 @@ function animate() {
 		iss_model.position.y = pos[1];
 		iss_model.position.z = pos[2];
 
-		cube.position.x = pos[0];
-		cube.position.y = pos[1];
-		cube.position.z = pos[2];
+		iss_model.add(new THREE.AmbientLight( 0xfffff0, 0.00025 ))
+		
 		if (is_iss_selected === true) {
-			camera.lookAt(pos[0], pos[1], pos[2]);
 			controls.target.set(pos[0], pos[1], pos[2]);
+			camera.lookAt(pos[0], pos[1], pos[2])	
 		} else {
 			camera.lookAt(0, 0, 0);
 			controls.target.set(0, 0, 0);
 		}
 		// window.addEventListener("resize", onWindowResize, false);
 	}
-	setInterval(render_line, 5000);
-	setInterval(scene.remove(line), 8000);
+		
+
 	hoverPieces();
 	renderer.render(scene, camera);
 	requestAnimationFrame(animate);

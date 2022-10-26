@@ -298,6 +298,24 @@ camera.aspect = window.innerWidth / window.innerHeight;
 camera.updateProjectionMatrix();
 renderer.setSize(window.innerWidth, window.innerHeight);
 
+function moveCamera() {
+    if (is_iss_selected == true)	{
+		var delta = new THREE.Clock().getDelta();
+		var sensitivity = 150;
+		const ISSpos = new THREE.Vector3();
+		iss_model.getWorldPosition(ISSpos)
+		// console.log(ISSpos);
+		// camera.position.x = iss_model.position.x 
+		// camera.position.y = iss_model.position.y + 1
+		// camera.position.z = iss_model.position.z 
+		// camera.lookAt(iss_model.position);
+		// controls.target = iss_model.position;
+		// controls.update();
+		controls.center = (ISSpos.x-0.5,ISSpos.y,ISSpos.z);
+		
+	};	
+	}
+    
 
 
 var satrec,
@@ -338,7 +356,7 @@ function animate() {
 		iss_model.position.x = pos[0];
 		iss_model.position.y = pos[1];
 		iss_model.position.z = pos[2];
-
+		iss_model.lookAt(EarthMesh.position);
 		iss_model.add(new THREE.AmbientLight( 0xfffff0, 0.00025 ))
 		
 		if (is_iss_selected === true) {
@@ -351,7 +369,8 @@ function animate() {
 		// window.addEventListener("resize", onWindowResize, false);
 	}
 		
-
+	
+	moveCamera()
 	hoverPieces();
 	renderer.render(scene, camera);
 	requestAnimationFrame(animate);

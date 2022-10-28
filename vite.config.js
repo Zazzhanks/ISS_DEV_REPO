@@ -7,13 +7,13 @@ import { defineConfig } from 'vite'
 
 
 export default defineConfig({
-  server: {
-    port: process.env.PORT || 8080
-  },
-  preview: {
-    port: process.env.port || 8080
-  },
-  plugins: [
-    vitePluginString.default()
-  ]
+    server: {
+        port: process.env.PORT || 8080
+    },
+    preview: {
+        port: process.env.port || 8080
+    },
+    plugins: [
+        vitePluginString.default()
+    ]
 })

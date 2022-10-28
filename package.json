@@ -1,56 +1,55 @@
 {
 
-  "name": "earth-3d",
+    "name": "earth-3d",
 
-  "private": true,
+    "private": true,
 
-  "version": "0.0.0",
+    "version": "0.0.0",
 
-  "type": "module",
+    "type": "module",
 
-  "scripts": {
+    "scripts": {
 
-    "dev": "vite",
+        "dev": "vite",
 
-    "build": "vite build",
+        "build": "vite build",
 
-    "preview": "vite preview",
+        "preview": "vite preview",
 
-    "start": "vite"
+        "start": "vite"
 
-  },
+    },
 
-  "devDependencies": {
+    "devDependencies": {
 
-    "vite": "^3.1.4",
+        "vite": "^3.1.4",
 
-    "vite-plugin-string": "^1.1.2"
+        "vite-plugin-string": "^1.1.2"
 
-  },
+    },
 
-  "dependencies": {
+    "dependencies": {
 
-    "axios": "^0.27.2",
+        "axios": "^0.27.2",
 
-    "cheerio": "^1.0.0-rc.12",
+        "cheerio": "^1.0.0-rc.12",
 
-    "cors": "^2.8.5",
+        "cors": "^2.8.5",
 
-    "esbuild-windows-64": "^0.15.10",
+        "esbuild-windows-64": "^0.15.10",
 
-    "express": "^4.18.1",
+        "express": "^4.18.1",
 
-    "form-data": "^4.0.0",
+        "form-data": "^4.0.0",
 
-    "gsap": "^3.11.2",
+        "gsap": "^3.11.2",
 
-    "node-fetch": "^3.2.10",
+        "node-fetch": "^3.2.10",
 
-    "satellite.js": "^4.1.4",
+        "satellite.js": "^4.1.4",
 
-    "three": "^0.144.0"
+        "three": "^0.144.0"
 
-  }
+    }
 
 }
-

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import cors from 'cors';
 
 getLocation();
 
@@ -25,7 +26,7 @@ async function getLocation() {
 
         let config = {
             method: 'get',
-            url: (`http://api.positionstack.com/v1/reverse?access_key=<your api key>&query=${latitude},${longitude}`),
+            url: (`http://api.positionstack.com/v1/reverse?access_key=3c0f357a575272c65473326b89991bc6&query=${latitude},${longitude}`),
             headers: {}
         };
 
@@ -75,7 +76,8 @@ async function getLocation() {
 
 }
 
-var popUpModal = document.getElementById('popUpModal')
+var popUpModal = document.getElementById('popUpModal');
+
 popUpModal.addEventListener('show.bs.modal', function(event) {
     // Button that triggered the modal
     var button = event.relatedTarget;
@@ -90,10 +92,92 @@ popUpModal.addEventListener('show.bs.modal', function(event) {
         modalBody.innerHTML = `<iframe width="470" height="315" src="https://www.youtube-nocookie.com/embed/Y1qQZbTF8iQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
     } else if (button.id == "imageToggle") {
         modalTitle.textContent = "ISS Modules";
-        modalBody.innerHTML = "image toggled";
+        modalBody.innerHTML = "";
+        const resultBody = document.createElement('div');
+
+        modalBody.innerHTML = `<select class="form-select" id="getModule">
+        <option value="1">Zarya Module</option>
+        <option value="2">Unity Module</option>
+        <option value="3">Zvezda Service Module</option>
+        <option value="4">Z1 (Zenith) Truss</option>
+        <option value="5">U.S. Destiny Laboratory Module</option>
+        <option value="6">External Stowage Platform-1</option>
+        <option value="7">Space Station Robotic Manipulator System</option>
+        <option value="8">Quest Airlock</option>
+        <option value="9">Pirs Docking Compartment</option>
+        <option value="10">S0 (Starboard) Truss</option>
+        <option value="11">S1 (Starboard) Truss</option>
+        <option value="12">External Stowage Platform-2</option>
+        <option value="13">P3/P4 (Port) Truss & Solar Arrays</option>
+        <option value="14">P5 (Port) Truss Spacer</option>
+        <option value="15">S3/S4 (Starboard) Truss & Solar Arrays</option>
+        <option value="16">S5 (Starboard) Truss Spacer</option>
+        <option value="17">Harmony Module</option>
+        <option value="18">Columbus Laboratory Module</option>
+        <option value="19">Japanese Logistics Module and Dextre</option>
+        <option value="20">Japanese Pressurized Module (Kibo)</option>
+        <option value="21">S6 (Starboard) Truss Spacer and Solar Arrays</option>
+        <option value="22">Japanese Exposed Facility</option>
+        <option value="23">Poisk Mini-Research Module-2</option>
+        <option value="24">EXPRESS Logistics Carrier-1</option>
+        <option value="25">Tranquility Module and Cupola</option>
+        <option value="26">Rassvet Mini-Research Module-1</option>
+        <option value="27">Permanent Multipurpose Module</option>
+        <option value="28">Alpha Magnetic Spectrometer-2 (AMS-2)</option>
+        <option value="29">Bigelow Expandable Activity Module (BEAM)</option>
+        <option value="30">NanoRacks Bishop Airlock</option>
+        <option value="31">Nauka Multipurpose Laboratory Module</option>
+        <option value="32">Prichal Docking Module</option>
+      </select>`;
+
+        const select = document.querySelector('#getModule')
+        select.addEventListener('change', async(e) => {
+            const reqModule = e.target.value;
+            resultBody.innerHTML = "Loading...";
+
+            const res = await axios({
+                method: 'get',
+                url: `https://iss-module.azurewebsites.net/${reqModule}`,
+                headers: {}
+            });
+
+            const resModule = await res.data;
+
+            resultBody.innerHTML = "";
+            resultBody.innerHTML = `<div class="conjunctions-wrapper">
+                    <div class="conjunction">
+                    <div class="image-wrapper">
+                       <img src="${resModule.images[0]}"></img>
+                    </div>
+                    <div>
+                        <p>Module</p>
+                        <span><a>Module Name: </a><a>${resModule.module}</a></span>
+                        <span><a>Launch Date: </a><a>${resModule.launchDate}</a></span>
+                        <span><a>Installed Date: </a><a>${resModule.installedDate}</a></span>
+                        <span><a>Mass: </a><a>${resModule.mass}</a></span>
+                    </div>
+                    <div>
+                        <p>Details</p>
+                        <span><a>Nation: </a><a>${resModule.nation}</a></span>
+                        <span><a>Type: </a><a>${resModule.type}</a></span>
+                        <span><a>Operator: </a><a>${resModule.operator}</a></span>
+                        <span><a>Contractors: </a><a>${resModule.contractors}</a></span>
+                        <span><a>Equipment: </a><a>${resModule.equipment}</a></span>
+                        <span><a>Configuration: </a><a>${resModule.configuration}</a></span>
+                        <span><a>Propulsion: </a><a>${resModule.propulsion}</a></span>
+                        <span><a>Power: </a><a>${resModule.power}</a></span>
+                        <span><a>Lifetime: </a><a>${resModule.lifetime}</a></span>
+                        <span><a>Orbit: </a><a>${resModule.orbit}</a></span>
+                    </div>
+                </div>
+            </div>`;
+        });
+
+        modalBody.append(resultBody);
     } else if (button.id == "passesToggle") {
         modalTitle.textContent = "Pass Alerts";
-        modalBody.innerHTML = "Loading..."
+        modalBody.innerHTML = "";
+        modalBody.innerHTML = "Loading...";
 
         function geUserLocation() {
             if (navigator.geolocation) {
@@ -104,7 +188,7 @@ popUpModal.addEventListener('show.bs.modal', function(event) {
         }
 
         async function showPosition(position) {
-            
+
             function genDate(date) {
                 var year = date.substring(0, 4);
                 var month = date.substring(4, 6);
@@ -116,16 +200,16 @@ popUpModal.addEventListener('show.bs.modal', function(event) {
                 var newDate = new Date(year, month - 1, day).toDateString();
                 return `${newDate} ${hour}: ${min}: ${sec}`
             }
-            
+
             function getDirection(angle) {
-            var directions = ['S', 'SSE', 'SE', 'ESE', 'E', 'ENE', 'NE', 'NNE', 'N', 'NNW', 'NW', 'WNW', 'W', 'WSW', 'SW', 'SSW'];
-            var index = Math.round(((angle %= 360) < 0 ? angle + 360 : angle) / 22.5) % 16;
-            return directions[index];
+                var directions = ['S', 'SSE', 'SE', 'ESE', 'E', 'ENE', 'NE', 'NNE', 'N', 'NNW', 'NW', 'WNW', 'W', 'WSW', 'SW', 'SSW'];
+                var index = Math.round(((angle %= 360) < 0 ? angle + 360 : angle) / 22.5) % 16;
+                return directions[index];
             }
-            
+
             const getPassesRes = await axios({
                 method: 'get',
-                url: `https://api.scraperapi.com?api_key=<your sraperapi api key>&url=https://www.astroviewer.net/iss/ws/predictor.php?sat=25544&lon=${position.coords.longitude}&lat=${position.coords.latitude}&time=1666008000`,
+                url: `https://api.scraperapi.com?api_key=2f68c42eb2b414a2b03f7b862b466d34&url=https://www.astroviewer.net/iss/ws/predictor.php?sat=25544&lon=${position.coords.longitude}&lat=${position.coords.latitude}`,
                 headers: {}
             })
 
@@ -134,39 +218,46 @@ popUpModal.addEventListener('show.bs.modal', function(event) {
 
             modalBody.innerHTML = ""
 
-            getPasses.forEach(e => {
-                modalBody.innerHTML += `<div class="conjunctions-wrapper">
-                    <div class="conjunction">
-                    <div>
-                        <p>Pass Time</p>
-                        <span><a>Date: </a><a>${genDate(e.begin)}</a></span>
-                        <span><a>Magnitude: </a><a>${e.mag}</a></span>
-                        <span><a>Visible Radius: </a><a >${e.visibRad}</a></span>
+            if (getPasses.length != 0) {
+                getPasses.forEach(e => {
+                    modalBody.innerHTML += `<div class="conjunctions-wrapper">
+                        <div class="conjunction">
+                        <div>
+                            <p>Pass Time</p>
+                            <span><a>Date: </a><a>${genDate(e.begin)}</a></span>
+                            <span><a>Magnitude: </a><a>${e.mag}</a></span>
+                            <span><a>Visible Radius: </a><a >${e.visibRad}</a></span>
+                        </div>
+                        <div>
+                            <p>Sighting Details</p>
+                            <span><a>Start: </a><a>${genDate(e.begin)}</a></span>
+                            <span><a>Start Altitude: </a><a>${e.beginAlt}</a></span>
+                            <span><a>Start Direction: </a><a>${getDirection(e.beginDir)}</a></span>
+    
+                            <span><a>Max: </a><a>${genDate(e.max)}</a></span>
+                            <span><a>Max Altitude: </a><a>${e.maxAlt}</a></span>
+                            <span><a>Max Direction: </a><a>${getDirection(e.maxDir)}</a></span>
+    
+                            <span><a>End: </a><a>${genDate(e.end)}</a></span>
+                            <span><a>End Altitude: </a><a>${e.endAlt}</a></span>
+                            <span><a>End Direction: </a><a>${getDirection(e.endDir)}</a></span>
+    
+                        </div>
                     </div>
-                    <div>
-                        <p>Sighting Details</p>
-                        <span><a>Start: </a><a>${genDate(e.begin)}</a></span>
-                        <span><a>Start Altitude: </a><a>${e.beginAlt}</a></span>
-                        <span><a>Start Direction: </a><a>${getDirection(e.beginDir)}</a></span>
+                </div>`
+                });
+            }
 
-                        <span><a>Max: </a><a>${genDate(e.max)}</a></span>
-                        <span><a>Max Altitude: </a><a>${e.maxAlt}</a></span>
-                        <span><a>Max Direction: </a><a>${getDirection(e.maxDir)}</a></span>
-
-
-                        <span><a>End: </a><a>${genDate(e.end)}</a></span>
-                        <span><a>End Altitude: </a><a>${e.endAlt}</a></span>
-                        <span><a>End Direction: </a><a>${getDirection(e.endDir)}</a></span>
-                    </div>
-                </div>
-            </div>`
-            });
-            return getPasses
+            modalBody.innerHTML = "No passes above your location."
         }
+
         geUserLocation();
+
+
     } else {
         modalTitle.textContent = "Conjunction Alert";
-        modalBody.innerHTML = "Loading..."
+        modalBody.innerHTML = "";
+        modalBody.innerHTML = "Loading...";
 
         async function getConjunction() {
             const res = await axios({

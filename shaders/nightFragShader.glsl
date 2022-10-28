@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 uniform sampler2D dayTexture;
 uniform sampler2D nightTexture;
 
@@ -20,6 +21,8 @@ void main(void) {
 
     gl_FragColor = vec4(color, 1.0);
 =======
+=======
+>>>>>>> 3c1fb6d859adcdc953613b1257eff489f749b0d3
 uniform sampler2D dayTexture;
 uniform sampler2D nightTexture;
 
@@ -40,5 +43,8 @@ void main(void) {
     vec3 color = mix(nightColor, dayColor, mixAmount);
 
     gl_FragColor = vec4(color, 1.0);
+<<<<<<< HEAD
+>>>>>>> 3c1fb6d859adcdc953613b1257eff489f749b0d3
+=======
 >>>>>>> 3c1fb6d859adcdc953613b1257eff489f749b0d3
 }
